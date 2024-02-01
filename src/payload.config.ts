@@ -8,6 +8,7 @@ import { buildConfig } from "payload/config";
 
 import Users from "./collections/Users";
 import Stores from "./collections/Stores";
+import Brands from "./collections/Brands";
 
 export default buildConfig({
   admin: {
@@ -15,7 +16,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users, Stores],
+  collections: [Brands, Users, Stores],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

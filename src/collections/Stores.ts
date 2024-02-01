@@ -1,17 +1,5 @@
 import { CollectionConfig } from "payload/types";
 
-export type URLTypes = "facebook" | "instagram" | "website" | "tiktok";
-
-export interface Stores {
-  id: string;
-  name: string;
-  location: { lat: number; lng: number };
-  address?: string;
-  phone?: string;
-  email?: string;
-  urls: Array<{ type: URLTypes; url: string }>;
-}
-
 const Stores: CollectionConfig = {
   slug: "stores",
   auth: false,
