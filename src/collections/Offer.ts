@@ -71,6 +71,30 @@ const Offer: CollectionConfig = {
       maxDepth: 1,
     },
   ],
+  endpoints: [
+    {
+      path: "/latest",
+      method: "get",
+      handler: async (req, res, next) => {
+        const limit = parseInt(`${req.query.limit}`, 10);
+        const page = parseInt(`${req.query.page}`, 10);
+
+        res.status(200).send(
+          await req.payload.find({
+            collection: OFFERS_SLUG,
+            sort: "-expirationDate",
+            where: {
+              expirationDate: {
+                greater_than_equal: new Date(),
+              },
+            },
+            limit: isNaN(limit) ? undefined : limit,
+            page: isNaN(page) ? undefined : page,
+          })
+        );
+      },
+    },
+  ],
 };
 
 export default Offer;
