@@ -1,8 +1,12 @@
 import { CollectionConfig } from "payload/types";
 
+export const STORES_SLUG = "stores";
+
 const Stores: CollectionConfig = {
-  slug: "stores",
-  auth: false,
+  slug: STORES_SLUG,
+  access: {
+    read: () => true,
+  },
   admin: {
     useAsTitle: "name",
   },

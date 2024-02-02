@@ -1,8 +1,12 @@
 import { CollectionConfig } from "payload/types";
 
+export const BRANDS_SLUG = "brands";
+
 const Brands: CollectionConfig = {
-  slug: "brands",
-  auth: false,
+  slug: BRANDS_SLUG,
+  access: {
+    read: () => true,
+  },
   admin: {
     useAsTitle: "name",
   },
