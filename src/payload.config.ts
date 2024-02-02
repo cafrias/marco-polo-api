@@ -28,7 +28,7 @@ export default buildConfig({
   },
   plugins: [payloadCloud()],
   db: mongooseAdapter({
-    url: process.env.DATABASE_URI,
+    url: process.env.DATABASE_URI as string,
   }),
   cors: "*",
   onInit() {

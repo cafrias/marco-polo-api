@@ -4,6 +4,7 @@ import { STORES_SLUG } from "./stores";
 import { SearchService } from "../search/search-service";
 import { Offer } from "../models/offer";
 import { Brand } from "../models/brand";
+import { parseIntOrUndefined } from "../utils/parse-int-or-undefined";
 
 export const OFFERS_SLUG = "offers";
 
@@ -79,22 +80,69 @@ const Offer: CollectionConfig = {
       path: "/latest",
       method: "get",
       handler: async (req, res, next) => {
-        const limit = parseInt(`${req.query.limit}`, 10);
-        const page = parseInt(`${req.query.page}`, 10);
+        const limit = parseIntOrUndefined(req.query.limit);
+        const page = parseIntOrUndefined(req.query.page);
 
         res.status(200).send(
           await req.payload.find({
             collection: OFFERS_SLUG,
-            sort: "-expirationDate",
+            sort: "expirationDate",
             where: {
               expirationDate: {
                 greater_than_equal: new Date(),
               },
             },
-            limit: isNaN(limit) ? undefined : limit,
-            page: isNaN(page) ? undefined : page,
+            limit,
+            page,
           })
         );
+      },
+    },
+    {
+      path: "/search",
+      method: "get",
+      handler: async (req, res, next) => {
+        const limit = parseIntOrUndefined(req.query.limit);
+        const page = parseIntOrUndefined(req.query.page);
+
+        const term = req.query.q;
+        if (!term) {
+          return res.status(400).send({
+            reason: "`q` query string param is missing",
+          });
+        }
+
+        if (typeof term !== "string") {
+          return res.status(400).send({
+            reason: "`q` query string param must be a string",
+          });
+        }
+
+        try {
+          const indexedResults = await SearchService.search({
+            term,
+            limit,
+            page,
+          });
+
+          const ids = indexedResults.hits.map(({ id }) => id);
+
+          const results = await req.payload.find({
+            collection: OFFERS_SLUG,
+            limit,
+            sort: "expirationDate",
+            where: {
+              id: {
+                in: ids.join(","),
+              },
+            },
+          });
+
+          res.status(200).send(results);
+        } catch (err) {
+          console.error(err);
+          res.status(500).send();
+        }
       },
     },
   ],
