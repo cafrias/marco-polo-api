@@ -12,6 +12,16 @@ services:
     logging:
       driver: none
 
+  search-engine:
+    image: getmeili/meilisearch:v1.6
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+    ports:
+      - 7700:7700
+    volumes:
+      - meili_data:/meili_data
+
 volumes:
   data:
   node_modules:
+  meili_data:

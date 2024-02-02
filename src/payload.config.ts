@@ -6,11 +6,12 @@ import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { buildConfig } from "payload/config";
 
-import Users from "./collections/Users";
-import Stores from "./collections/Stores";
-import Brands from "./collections/Brands";
-import { Media } from "./collections/Media";
-import Offer from "./collections/Offer";
+import Users from "./collections/users";
+import Stores from "./collections/stores";
+import Brands from "./collections/brands";
+import { Media } from "./collections/media";
+import Offer from "./collections/offer";
+import { SearchService } from "./search/search-service";
 
 export default buildConfig({
   admin: {
@@ -30,4 +31,7 @@ export default buildConfig({
     url: process.env.DATABASE_URI,
   }),
   cors: "*",
+  onInit() {
+    SearchService.init();
+  },
 });

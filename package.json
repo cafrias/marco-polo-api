@@ -23,6 +23,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "meilisearch": "^0.37.0",
     "payload": "^2.0.0"
   },
   "devDependencies": {

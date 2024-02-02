@@ -1,6 +1,9 @@
 import { CollectionConfig } from "payload/types";
-import { BRANDS_SLUG } from "./Brands";
-import { STORES_SLUG } from "./Stores";
+import { BRANDS_SLUG } from "./brands";
+import { STORES_SLUG } from "./stores";
+import { SearchService } from "../search/search-service";
+import { Offer } from "../models/offer";
+import { Brand } from "../models/brand";
 
 export const OFFERS_SLUG = "offers";
 
@@ -95,6 +98,39 @@ const Offer: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        const brand = (await req.payload.findByID({
+          collection: BRANDS_SLUG,
+          id: (doc as Offer).brand,
+        })) as unknown as Brand;
+        try {
+          if (operation === "create") {
+            await SearchService.createOffer(doc as Offer, brand);
+          } else {
+            // TODO: update only when indexed fields are updated.
+            await SearchService.updateOffer(doc as Offer, brand);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+
+        return doc;
+      },
+    ],
+    afterDelete: [
+      async ({ doc }) => {
+        try {
+          SearchService.deleteOffer(doc as Offer);
+        } catch (err) {
+          console.error(err);
+        }
+
+        return doc;
+      },
+    ],
+  },
 };
 
 export default Offer;
