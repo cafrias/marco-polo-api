@@ -1,3 +1,5 @@
+import { round } from "./round";
+
 export function toUnix(date: Date): number {
-  return parseInt((date.getTime() / 1000).toFixed(0));
+  return round(date.getTime() / 1000);
 }

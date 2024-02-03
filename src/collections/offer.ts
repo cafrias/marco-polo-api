@@ -5,6 +5,7 @@ import { SearchService } from "../search/search-service";
 import { Offer } from "../models/offer";
 import { Brand } from "../models/brand";
 import { parseIntOrUndefined } from "../utils/parse-int-or-undefined";
+import { round } from "../utils/round";
 
 export const OFFERS_SLUG = "offers";
 
@@ -138,7 +139,17 @@ const Offer: CollectionConfig = {
             },
           });
 
-          res.status(200).send(results);
+          const totalPages = round(
+            (indexedResults.estimatedTotalHits || 1) / (limit || 1)
+          );
+
+          const mergedResults: typeof results = {
+            ...results,
+            totalPages: Math.max(1, totalPages),
+            page: indexedResults.offset,
+          };
+
+          res.status(200).send(mergedResults);
         } catch (err) {
           console.error(err);
           res.status(500).send();

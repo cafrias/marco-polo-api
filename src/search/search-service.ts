@@ -47,7 +47,7 @@ export class SearchServiceImpl {
     const todayTimestamp = toUnix(getToday());
     return this.getOffersIndex().search(term, {
       limit,
-      offset: page,
+      offset: page - 1,
       filter: [`expirationDate >= ${todayTimestamp}`],
     });
   }
